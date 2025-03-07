@@ -1,0 +1,1 @@
+The simai auto-sorter was made to automate the extracting, sorting and conversion of maichart converts from another repo. All it requires are the said zip files from the repo to be placed inside the 'ZIP Inputs' folder and it will spit out the .ADX files into the 'ADX Files' folder.
