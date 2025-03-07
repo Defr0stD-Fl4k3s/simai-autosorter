@@ -8,3 +8,5 @@ How to use:
 - Start the script and watch it work.
 
 Since I just started coding in Python about 5 days ago from time of last README update, I'm not sure if this is the most efficient way of doing things. Feel free to suggest any changes or improvements I can make to the script. Emjoy :)
+
+P.S., another unintended function of my code is as a bedtime story. This, I was made aware of by a friend of mine.
