@@ -70,6 +70,8 @@ if os.path.exists(adx_output_dir):
                     file_dir = os.path.join(adx_output_dir, file)
                     if os.path.isdir(file_dir):
                         shutil.rmtree(file_dir)
+                    elif os.path.isfile(file_dir):
+                        os.remove(file_dir)
                     elif zipfile.is_zipfile(file_dir):
                         os.remove(file_dir)
             except:
@@ -77,7 +79,7 @@ if os.path.exists(adx_output_dir):
             else:
                 print("File '%s' was removed successfully." % file)
         else:
-            print("No files found in 'ADX Files'.")
+            print("No files found in 'ADX Files' folder.")
     except:
         print("Something went wrong! Unable to clear folder.")
     else:
