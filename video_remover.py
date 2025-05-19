@@ -41,3 +41,28 @@ if os.path.exists(clean_output_dir):
         print("Something went wrong! Unable to clear folder.")
     else:
         print("Successfully cleared contents of 'Video-Free Files' folder.")
+
+    # Unzip all .zip files found in 'ZIP Imports' folder
+    for zip_file in os.listdir(zip_import_dir):
+        print("\nFound zipfile '%s'. Unzipping file..." % str(zip_file))
+        zip_file_dir = os.path.join(zip_import_dir, zip_file)
+
+        with zipfile.ZipFile(zip_file_dir, "r") as extract_zip:
+            # Extract all files from zip file
+            try:
+                extract_zip.extractall(path=clean_output_dir)
+            except:
+                print("Unable to extract zip file!")
+            else:
+                print("Extraction complete.")
+
+    # Locate all unzipped directories
+    for game_ver in os.listdir(clean_output_dir):
+        game_ver_dir = os.path.join(clean_output_dir, game_ver)
+        print("\nFound game version folder '%s'." % game_ver)
+
+        # Locate all song directories
+        for song_folder in list(Path(game_ver_dir).glob("*_*")):
+            song_folder_name = str(song_folder).split("\\")[2]
+            print("   Found song folder '%s'." % song_folder_name)
+
