@@ -85,102 +85,102 @@ if os.path.exists(adx_output_dir):
     else:
         print("Successfully cleared 'ADX Files'.")
 
-# Unzip all .zip files found in 'ZIP Imports' folder
-for zip_file in os.listdir(zip_import_dir):
-    print("\nFound zipfile '%s'. Unzipping file..." % str(zip_file))
-    zip_file_dir = os.path.join(zip_import_dir, zip_file)
+    # Unzip all .zip files found in 'ZIP Imports' folder
+    for zip_file in os.listdir(zip_import_dir):
+        print("\nFound zipfile '%s'. Unzipping file..." % str(zip_file))
+        zip_file_dir = os.path.join(zip_import_dir, zip_file)
 
-    with zipfile.ZipFile(zip_file_dir, "r") as extract_zip:
-        # Extract all files from zip file
-        try:
-            extract_zip.extractall(path=adx_output_dir)
-        except:
-            print("Unable to extract zip file!")
-        else:
-            print("Extraction complete.")
-
-# Locate all unzipped directories
-for game_ver in os.listdir(adx_output_dir):
-    print("\nFound game version folder '%s'." % game_ver)
-    game_ver_dir = os.path.join(adx_output_dir, game_ver)
-
-    # Fill folder with genre folders
-    for genre_name in genre_folder_names:
-        new_genre_folder_dir = os.path.join(game_ver_dir, genre_name)
-        try:
-            os.makedirs(new_genre_folder_dir)
-        except:
-            print("   Error creating folder '%s'!" % genre_name)
-        else:
-            print("   Successfully created directory '%s'." % genre_name)
-
-    # Locate all song directories
-    for song_folder in list(Path(game_ver_dir).glob("*_*")):
-        print("   Found song folder '%s'." % str(song_folder).split("\\")[2])
-        song_folder_name = str(song_folder).split("\\")[2]
-        song_file_dir = os.path.join(song_folder, song_map_name)
-        print("      Found song file in %s." % song_file_dir)
-
-        # Read lines in song map file
-        try:
-            with open(song_file_dir, "r", encoding="utf8") as song_file:
-                lines = song_file.readlines()
-
-                # Isolate each line as separate text
-                for line in lines:
-                    text = line.strip()
-
-                    # Locate genre among the texts
-                    if "&genre=" in text:
-                        # Extract genre label
-                        genre_text = text.split("=")[1]
-                        print("      Extracted genre '%s' from file." % genre_text)
-        except:
-            print("      Unable to read file!")
-        else:
-            print("      Successfully read file.")
-
-        # Identify new directory where song folder is moved to
-        for genre_title in genre_folder_names:
-            if genre_text in genre_title:
-                # Create new song folder directory
-                new_song_folder_dir = os.path.join(game_ver_dir, genre_title, song_folder_name)
-                try:
-                    # Move folder to new directory
-                    shutil.move(song_folder, new_song_folder_dir)
-                except:
-                    print("      Unable to move from '%s' to '%s'!" % (song_folder, new_song_folder_dir))
-                else:
-                    print("      Successfully moved '%s' to '%s'!" % (song_folder, new_song_folder_dir))
-
-    # Check name against list of allowed
-    new_zip_name = ''
-
-    for zip_name in adx_file_names:
-        if game_ver in zip_name:
-            new_zip_name = adx_file_names.get(game_ver)
-            # Create zip file for sorted folder
+        with zipfile.ZipFile(zip_file_dir, "r") as extract_zip:
+            # Extract all files from zip file
             try:
-                shutil.make_archive(os.path.join(adx_output_dir, new_zip_name), "zip", os.path.join(adx_output_dir, game_ver))
+                extract_zip.extractall(path=adx_output_dir)
             except:
-                print("         Failed to make archive '%s'!" % new_zip_name)
+                print("Unable to extract zip file!")
             else:
-                print("         Successfully created archive '%s'." % new_zip_name)
+                print("Extraction complete.")
 
-                # Remove original folder
+    # Locate all unzipped directories
+    for game_ver in os.listdir(adx_output_dir):
+        print("\nFound game version folder '%s'." % game_ver)
+        game_ver_dir = os.path.join(adx_output_dir, game_ver)
+
+        # Fill folder with genre folders
+        for genre_name in genre_folder_names:
+            new_genre_folder_dir = os.path.join(game_ver_dir, genre_name)
+            try:
+                os.makedirs(new_genre_folder_dir)
+            except:
+                print("   Error creating folder '%s'!" % genre_name)
+            else:
+                print("   Successfully created directory '%s'." % genre_name)
+
+        # Locate all song directories
+        for song_folder in list(Path(game_ver_dir).glob("*_*")):
+            print("   Found song folder '%s'." % str(song_folder).split("\\")[2])
+            song_folder_name = str(song_folder).split("\\")[2]
+            song_file_dir = os.path.join(song_folder, song_map_name)
+            print("      Found song file in %s." % song_file_dir)
+
+            # Read lines in song map file
+            try:
+                with open(song_file_dir, "r", encoding="utf8") as song_file:
+                    lines = song_file.readlines()
+
+                    # Isolate each line as separate text
+                    for line in lines:
+                        text = line.strip()
+
+                        # Locate genre among the texts
+                        if "&genre=" in text:
+                            # Extract genre label
+                            genre_text = text.split("=")[1]
+                            print("      Extracted genre '%s' from file." % genre_text)
+            except:
+                print("      Unable to read file!")
+            else:
+                print("      Successfully read file.")
+
+            # Identify new directory where song folder is moved to
+            for genre_title in genre_folder_names:
+                if genre_text in genre_title:
+                    # Create new song folder directory
+                    new_song_folder_dir = os.path.join(game_ver_dir, genre_title, song_folder_name)
+                    try:
+                        # Move folder to new directory
+                        shutil.move(song_folder, new_song_folder_dir)
+                    except:
+                        print("      Unable to move from '%s' to '%s'!" % (song_folder, new_song_folder_dir))
+                    else:
+                        print("      Successfully moved '%s' to '%s'!" % (song_folder, new_song_folder_dir))
+
+        # Check name against list of allowed
+        new_zip_name = ''
+
+        for zip_name in adx_file_names:
+            if game_ver in zip_name:
+                new_zip_name = adx_file_names.get(game_ver)
+                # Create zip file for sorted folder
                 try:
-                    shutil.rmtree(game_ver_dir)
+                    shutil.make_archive(os.path.join(adx_output_dir, new_zip_name), "zip", os.path.join(adx_output_dir, game_ver))
                 except:
-                    print("         Unable to delete original folder '%s'!" % game_ver)
+                    print("         Failed to make archive '%s'!" % new_zip_name)
                 else:
-                    print("         Successfully deleted original folder '%s'." % game_ver)
+                    print("         Successfully created archive '%s'." % new_zip_name)
 
-    # Change '.zip' extension to '.adx'
-    try:
-        path = Path.cwd() / Path(adx_output_dir) / str(new_zip_name + ".zip")
-        new_file_path = path.with_suffix(".adx")
-        path.rename(new_file_path)
-    except:
-        print("Unable to change file extension for '%s' to '.adx'!" % path)
-    else:
-        print("Successfully changed file extension.\nSuccessfully created")
+                    # Remove original folder
+                    try:
+                        shutil.rmtree(game_ver_dir)
+                    except:
+                        print("         Unable to delete original folder '%s'!" % game_ver)
+                    else:
+                        print("         Successfully deleted original folder '%s'." % game_ver)
+
+        # Change '.zip' extension to '.adx'
+        try:
+            path = Path.cwd() / Path(adx_output_dir) / str(new_zip_name + ".zip")
+            new_file_path = path.with_suffix(".adx")
+            path.rename(new_file_path)
+        except:
+            print("Unable to change file extension for '%s' to '.adx'!" % path)
+        else:
+            print("Successfully changed file extension.\nSuccessfully created")
